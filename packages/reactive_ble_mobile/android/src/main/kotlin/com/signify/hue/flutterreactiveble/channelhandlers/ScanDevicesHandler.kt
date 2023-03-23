@@ -34,7 +34,7 @@ class ScanDevicesHandler(private val bleClient: com.signify.hue.flutterreactiveb
 
     private fun startDeviceScan() {
         scanParameters?.let { params ->
-            scanForDevicesDisposable = bleClient.scanForDevices(params.filter, params.mode, params.locationServiceIsMandatory)
+            scanForDevicesDisposable = bleClient.scanForDevices(params.filterService, params.filterCompany, params.mode, params.locationServiceIsMandatory)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             { scanResult ->
@@ -59,10 +59,12 @@ class ScanDevicesHandler(private val bleClient: com.signify.hue.flutterreactiveb
 
     fun prepareScan(scanMessage: pb.ScanForDevicesRequest) {
         stopDeviceScan()
-        val filter = scanMessage.serviceUuidsList
+        val filterService = scanMessage.serviceUuidsList
                 .map { ParcelUuid(UuidConverter().uuidFromByteArray(it.data.toByteArray())) }
+        val filterCompany = scanMessage.companyIdsList
+            .map { it }
         val scanMode = createScanMode(scanMessage.scanMode)
-        scanParameters = ScanParameters(filter, scanMode, scanMessage.requireLocationServicesEnabled)
+        scanParameters = ScanParameters(filterService, filterCompany, scanMode, scanMessage.requireLocationServicesEnabled)
     }
 
     private fun handleDeviceScanResult(discoveryMessage: pb.DeviceScanInfo) {
@@ -70,4 +72,4 @@ class ScanDevicesHandler(private val bleClient: com.signify.hue.flutterreactiveb
     }
 }
 
-private data class ScanParameters(val filter: List<ParcelUuid>, val mode: ScanMode, val locationServiceIsMandatory: Boolean)
+private data class ScanParameters(val filterService: List<ParcelUuid>, val filterCompany: List<Int>, val mode: ScanMode, val locationServiceIsMandatory: Boolean)

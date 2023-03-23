@@ -62,15 +62,21 @@ open class ReactiveBleClient(private val context: Context) : BleClient {
     @Suppress("SpreadOperator")
     override fun scanForDevices(
         services: List<ParcelUuid>,
+        companies: List<Int>,
         scanMode: ScanMode,
         requireLocationServicesEnabled: Boolean
     ): Observable<ScanInfo> {
 
-        val filters = services.map { service ->
+        var filters = services.map { service ->
             ScanFilter.Builder()
                 .setServiceUuid(service)
                 .build()
         }.toTypedArray()
+        filters += companies.map { companyid ->
+            ScanFilter.Builder()
+                .setManufacturerData(companyid, byteArrayOf(), byteArrayOf())
+                .build()
+                    }.toTypedArray()
 
         return rxBleClient.scanBleDevices(
             ScanSettings.Builder()

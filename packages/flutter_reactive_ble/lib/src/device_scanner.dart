@@ -7,6 +7,7 @@ abstract class DeviceScanner {
 
   Stream<DiscoveredDevice> scanForDevices({
     required List<Uuid> withServices,
+    required List<int> withCompanyIds,
     ScanMode scanMode = ScanMode.balanced,
     bool requireLocationServicesEnabled = true,
   });
@@ -41,12 +42,13 @@ class DeviceScannerImpl implements DeviceScanner {
   @override
   Stream<DiscoveredDevice> scanForDevices({
     required List<Uuid> withServices,
+    required List<int> withCompanyIds,
     ScanMode scanMode = ScanMode.balanced,
     bool requireLocationServicesEnabled = true,
   }) {
     final completer = Completer<void>();
     _currentScanSession =
-        ScanSession(withServices: withServices, future: completer.future);
+        ScanSession(withServices: withServices, withCompanyIds: withCompanyIds, future: completer.future);
     // Make sure completing a future with an error does not lead to an unhandled exception.
     completer.future.catchError((Object e, StackTrace s) {});
 
@@ -84,6 +86,7 @@ class DeviceScannerImpl implements DeviceScanner {
     return _blePlatform
         .scanForDevices(
           withServices: withServices,
+          withCompanyIds: withCompanyIds,
           scanMode: scanMode,
           requireLocationServicesEnabled: requireLocationServicesEnabled,
         )

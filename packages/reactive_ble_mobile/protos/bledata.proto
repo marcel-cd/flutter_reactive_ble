@@ -4,6 +4,7 @@ option java_outer_classname = "ProtobufModel";
 
 message ScanForDevicesRequest {
     repeated Uuid serviceUuids = 1;
+    repeated int32 companyIds = 4;
     int32 scanMode = 2;
     bool requireLocationServicesEnabled = 3;
 }
@@ -15,6 +16,7 @@ message DeviceScanInfo {
     repeated ServiceDataEntry serviceData = 4;
     bytes manufacturerData = 6;
     repeated Uuid serviceUuids = 7;
+    repeated int32 companyIds = 8;
     int32 rssi = 5;
 }
 

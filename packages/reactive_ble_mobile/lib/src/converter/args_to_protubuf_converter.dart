@@ -40,6 +40,7 @@ abstract class ArgsToProtobufConverter {
 
   pb.ScanForDevicesRequest createScanForDevicesRequest({
     required List<Uuid>? withServices,
+    required List<int>? withCompanyIds,
     required ScanMode scanMode,
     required bool requireLocationServicesEnabled,
   });
@@ -171,6 +172,7 @@ class ArgsToProtobufConverterImpl implements ArgsToProtobufConverter {
   @override
   pb.ScanForDevicesRequest createScanForDevicesRequest({
     required List<Uuid>? withServices,
+    required List<int>? withCompanyIds,
     required ScanMode scanMode,
     required bool requireLocationServicesEnabled,
   }) {
@@ -182,6 +184,9 @@ class ArgsToProtobufConverterImpl implements ArgsToProtobufConverter {
       for (final withService in withServices) {
         args.serviceUuids.add((pb.Uuid()..data = withService.data));
       }
+    }
+    if (withCompanyIds != null) {
+      withCompanyIds.forEach(args.companyIds.add);
     }
 
     return args;

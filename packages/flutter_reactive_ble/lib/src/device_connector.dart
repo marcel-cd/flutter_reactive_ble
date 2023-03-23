@@ -81,6 +81,7 @@ class DeviceConnectorImpl implements DeviceConnector {
   Stream<ConnectionStateUpdate> connectToAdvertisingDevice({
     required String id,
     required List<Uuid> withServices,
+    required List<int> withCompanyIds,
     required Duration prescanDuration,
     Map<Uuid, List<Uuid>>? servicesWithCharacteristicsToDiscover,
     Duration? connectionTimeout,
@@ -88,6 +89,7 @@ class DeviceConnectorImpl implements DeviceConnector {
     if (_deviceScanner.currentScan != null) {
       return _awaitCurrentScanAndConnect(
         withServices,
+        withCompanyIds,
         prescanDuration,
         id,
         servicesWithCharacteristicsToDiscover,
@@ -99,6 +101,7 @@ class DeviceConnectorImpl implements DeviceConnector {
         servicesWithCharacteristicsToDiscover,
         connectionTimeout,
         withServices,
+        withCompanyIds,
         prescanDuration,
       );
     }
@@ -109,6 +112,7 @@ class DeviceConnectorImpl implements DeviceConnector {
     Map<Uuid, List<Uuid>>? servicesWithCharacteristicsToDiscover,
     Duration? connectionTimeout,
     List<Uuid> withServices,
+    List<int> withCompanyIds,
     Duration prescanDuration,
   ) {
     if (_deviceIsDiscoveredRecently(
@@ -122,7 +126,7 @@ class DeviceConnectorImpl implements DeviceConnector {
     } else {
       final scanSubscription = _deviceScanner
           .scanForDevices(
-              withServices: withServices, scanMode: ScanMode.lowLatency)
+              withServices: withServices, withCompanyIds: withCompanyIds, scanMode: ScanMode.lowLatency)
           .listen((DiscoveredDevice scanData) {}, onError: (Object _) {});
       Future<void>.delayed(prescanDuration).then<void>((_) {
         scanSubscription.cancel();
@@ -157,6 +161,7 @@ class DeviceConnectorImpl implements DeviceConnector {
 
   Stream<ConnectionStateUpdate> _awaitCurrentScanAndConnect(
     List<Uuid> withServices,
+    List<int> withCompanyIds,
     Duration prescanDuration,
     String id,
     Map<Uuid, List<Uuid>>? servicesWithCharacteristicsToDiscover,

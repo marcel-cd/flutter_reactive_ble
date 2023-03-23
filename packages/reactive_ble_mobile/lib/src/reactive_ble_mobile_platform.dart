@@ -98,11 +98,12 @@ class ReactiveBleMobilePlatform extends ReactiveBlePlatform {
   @override
   Stream<void> scanForDevices({
     required List<Uuid> withServices,
+    required List<int> withCompanyIds,
     required ScanMode scanMode,
     required bool requireLocationServicesEnabled,
   }) {
     _logger?.log(
-      'Scan for devices with services:$withServices, scanMode: $scanMode, requireLocationServicesEnabled: $requireLocationServicesEnabled',
+      'Scan for devices with services:$withServices, companyIds:$withCompanyIds, scanMode: $scanMode, requireLocationServicesEnabled: $requireLocationServicesEnabled',
     );
     return _bleMethodChannel
         .invokeMethod<void>(
@@ -110,6 +111,7 @@ class ReactiveBleMobilePlatform extends ReactiveBlePlatform {
           _argsToProtobufConverter
               .createScanForDevicesRequest(
                 withServices: withServices,
+                withCompanyIds: withCompanyIds,
                 scanMode: scanMode,
                 requireLocationServicesEnabled: requireLocationServicesEnabled,
               )

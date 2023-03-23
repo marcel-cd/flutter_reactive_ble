@@ -74,6 +74,7 @@ abstract class ReactiveBlePlatform extends PlatformInterface {
   /// the stream is `cancelled ` the ble scanning should stop.
   Stream<void> scanForDevices({
     required List<Uuid> withServices,
+    required List<int> withCompanyIds,
     required ScanMode scanMode,
     required bool requireLocationServicesEnabled,
   }) {

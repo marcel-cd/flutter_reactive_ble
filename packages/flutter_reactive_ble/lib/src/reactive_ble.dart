@@ -228,6 +228,7 @@ class FlutterReactiveBle {
   ///   Setting the value to false can result in not finding BLE peripherals on some Android devices.
   Stream<DiscoveredDevice> scanForDevices({
     required List<Uuid> withServices,
+    required List<int> withCompanyIds,
     ScanMode scanMode = ScanMode.balanced,
     bool requireLocationServicesEnabled = true,
   }) async* {
@@ -235,6 +236,7 @@ class FlutterReactiveBle {
 
     yield* _deviceScanner.scanForDevices(
       withServices: withServices,
+      withCompanyIds: withCompanyIds,
       scanMode: scanMode,
       requireLocationServicesEnabled: requireLocationServicesEnabled,
     );
